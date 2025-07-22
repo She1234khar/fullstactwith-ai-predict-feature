@@ -1,10 +1,12 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 // Async thunk for fetching price prediction
 export const fetchPricePrediction = createAsyncThunk(
   'priceTrend/fetchPrediction',
   async (productId) => {
-    const response = await fetch(`/api/shop/price-trend/prediction/${productId}`);
+    const response = await fetch(`${API_URL}/api/shop/price-trend/prediction/${productId}`);
     const data = await response.json();
     if (!data.success) {
       throw new Error(data.message || 'Failed to fetch price prediction');
@@ -17,7 +19,7 @@ export const fetchPricePrediction = createAsyncThunk(
 export const fetchPriceHistory = createAsyncThunk(
   'priceTrend/fetchHistory',
   async (productId) => {
-    const response = await fetch(`/api/shop/price-trend/history/${productId}`);
+    const response = await fetch(`${API_URL}/api/shop/price-trend/history/${productId}`);
     const data = await response.json();
     if (!data.success) {
       throw new Error(data.message || 'Failed to fetch price history');
