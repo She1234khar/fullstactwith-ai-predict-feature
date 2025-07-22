@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 export default function PriceTrendIndicator({ productId }) {
   const [trend, setTrend] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -9,12 +11,13 @@ export default function PriceTrendIndicator({ productId }) {
     if (productId) {
       fetchTrend();
     }
+    // eslint-disable-next-line
   }, [productId]);
 
   const fetchTrend = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`/api/shop/price-trend/prediction/${productId}`);
+      const response = await fetch(`${API_URL}/api/shop/price-trend/prediction/${productId}`);
       const data = await response.json();
       
       if (data.success && data.data.trendPercentage !== undefined) {
