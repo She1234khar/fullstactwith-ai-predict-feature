@@ -1,5 +1,7 @@
+const API_URL = import.meta.env.VITE_API_URL;
+
 export async function askProductQuestion(productId, question) {
-  const res = await fetch('/api/ai/qa', {
+  const res = await fetch(`${API_URL}/api/ai/qa`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ productId, question })
@@ -8,12 +10,12 @@ export async function askProductQuestion(productId, question) {
 }
 
 export async function getProductSummary(productId) {
-  const res = await fetch(`/api/ai/summary/${productId}`);
+  const res = await fetch(`${API_URL}/api/ai/summary/${productId}`);
   return res.json();
 }
 
 export async function smartSearch(query) {
-  const res = await fetch('/api/ai/search', {
+  const res = await fetch(`${API_URL}/api/ai/search`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ query })
@@ -31,7 +33,7 @@ export function parseGeminiFilters(filters) {
 }
 
 export async function getRecommendations({ interest, category, brand, priceRange }) {
-  const res = await fetch('/api/ai/recommend', {
+  const res = await fetch(`${API_URL}/api/ai/recommend`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ interest, category, brand, priceRange })
@@ -40,7 +42,7 @@ export async function getRecommendations({ interest, category, brand, priceRange
 }
 
 export async function askChatbot(message) {
-  const res = await fetch('/api/ai/chat', {
+  const res = await fetch(`${API_URL}/api/ai/chat`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ message })
@@ -49,11 +51,11 @@ export async function askChatbot(message) {
 }
 
 export async function getDiscountCategories() {
-  const res = await fetch('/api/ai/discounts');
+  const res = await fetch(`${API_URL}/api/ai/discounts`);
   return res.json();
 }
 
 export async function getReviewSummary(productId) {
-  const res = await fetch(`/api/ai/review-summary/${productId}`);
+  const res = await fetch(`${API_URL}/api/ai/review-summary/${productId}`);
   return res.json();
 } 
