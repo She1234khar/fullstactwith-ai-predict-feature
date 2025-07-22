@@ -64,6 +64,14 @@ const createOrder = async (req, res) => {
       }
     }
 
+    // Check CLIENT_BASE_URL
+    if (!process.env.CLIENT_BASE_URL) {
+      return res.status(500).json({
+        success: false,
+        message: 'CLIENT_BASE_URL is not set in environment variables',
+      });
+    }
+
     // Calculate PayPal items and total
     const paypalItems = cartItems.map(item => ({
       name: item.title,
@@ -98,59 +106,70 @@ const createOrder = async (req, res) => {
       ],
     };
 
-    paypal.payment.create(create_payment_json, async (error, paymentInfo) => {
-      if (error) {
-        console.error('Error creating PayPal payment:', error.response || error);
-        return res.status(500).json({
-          success: false,
-          message: 'Error creating PayPal payment',
-          details: error.response || error,
+    // Wrap PayPal payment creation in a promise for async/await
+    const createPaypalPayment = (create_payment_json) => {
+      return new Promise((resolve, reject) => {
+        paypal.payment.create(create_payment_json, (error, paymentInfo) => {
+          if (error) return reject(error);
+          resolve(paymentInfo);
         });
-      }
-
-      // Save order details to the database
-      const newOrder = new Order({
-        userId,
-        cartId,
-        cartItems,
-        addressInfo,
-        orderStatus,
-        paymentMethod,
-        paymentStatus,
-        totalAmount,
-        orderDate: new Date(orderDate),
-        orderUpdateDate: new Date(orderUpdateDate),
-        paymentId,
-        payerId,
       });
+    };
 
-      await newOrder.save();
-
-      // Decrease product stock for each cart item
-      for (const item of cartItems) {
-        if (item.productId && item.quantity) {
-          await Product.findByIdAndUpdate(
-            item.productId,
-            { $inc: { totalStock: -item.quantity } }
-          );
-        }
-      }
-
-      const approvalURL = paymentInfo.links.find(link => link.rel === 'approval_url')?.href;
-
-      res.status(200).json({
-        success: true,
-        message: 'Order created successfully',
-        approvalURL,
-        orderId: newOrder._id,
+    let paymentInfo;
+    try {
+      paymentInfo = await createPaypalPayment(create_payment_json);
+    } catch (error) {
+      console.error('Error creating PayPal payment:', error.response || error);
+      return res.status(500).json({
+        success: false,
+        message: 'Error creating PayPal payment',
+        details: error.response || error.message || error,
       });
+    }
+
+    // Save order details to the database
+    const newOrder = new Order({
+      userId,
+      cartId,
+      cartItems,
+      addressInfo,
+      orderStatus,
+      paymentMethod,
+      paymentStatus,
+      totalAmount,
+      orderDate: new Date(orderDate),
+      orderUpdateDate: new Date(orderUpdateDate),
+      paymentId,
+      payerId,
     });
 
+    await newOrder.save();
+
+    // Decrease product stock for each cart item
+    for (const item of cartItems) {
+      if (item.productId && item.quantity) {
+        await Product.findByIdAndUpdate(
+          item.productId,
+          { $inc: { totalStock: -item.quantity } }
+        );
+      }
+    }
+
+    const approvalURL = paymentInfo.links.find(link => link.rel === 'approval_url')?.href;
+
+    return res.status(200).json({
+      success: true,
+      message: 'Order created successfully',
+      approvalURL,
+      orderId: newOrder._id,
+    });
   } catch (e) {
     console.error(e);
     res.status(500).json({
       success: false,
       message: 'Some error occurred!',
+      details: e.message || e,
     });
   }
 };

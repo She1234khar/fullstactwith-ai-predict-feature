@@ -56,13 +56,13 @@ app.get('/api/*', (req, res) => {
 });
 
 // Serve static files
-const frontendPath = path.join(__dirname, '..', 'fronted1', 'fronted2', 'dist');
-app.use(express.static(frontendPath));
+// const frontendPath = path.join(__dirname, '..', 'fronted1', 'fronted2', 'dist');
+// app.use(express.static(frontendPath));
 
-// Serve React app for all other routes
-app.get('*', (req, res) => {
-  res.sendFile(path.join(frontendPath, 'index.html'));
-});
+// // Serve React app for all other routes
+// app.get('*', (req, res) => {
+//   res.sendFile(path.join(frontendPath, 'index.html'));
+// });
 
 // Error handling middleware
 app.use((err, req, res, next) => {
