@@ -1,5 +1,6 @@
 import { Card, CardHeader, CardTitle } from '@/components/ui/card';
 import { capturePayment } from '@/store/shop/order-slice';
+import { clearCart } from '@/store/shop/cart-slice';
 import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { useLocation } from 'react-router-dom';
@@ -23,8 +24,7 @@ export default function PaypalReturn() {
              if (response.payload.success) {
               // console.log("Payment captured successfully:", response.payload);
               console.log("Before remove:", sessionStorage.getItem('currentOrderId'));
-              
-
+              dispatch(clearCart());
               sessionStorage.removeItem('currentOrderId');
               console.log("After remove:", sessionStorage.getItem('currentOrderId')); 
 
