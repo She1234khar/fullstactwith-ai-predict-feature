@@ -6,6 +6,8 @@ import { Star } from 'lucide-react'; // ⭐️ Star icon
 import { setProductDetails } from '@/store/shop/product-slice';
 import { useDispatch, useSelector } from 'react-redux';
 import { getProductReviews } from '@/store/shop/review-slice';
+import { addToCart, fetchCartItems } from '@/store/shop/cart-slice';
+import { toast } from 'sonner';
 import ReviewForm from './review-form';
 import ReviewList from './review-list';
 import RatingDisplay from './rating-display';
@@ -92,7 +94,31 @@ export default function ProductDetailsDialog({ open, setOpen, productDetails }) 
             )}
           </div>
 
-          <Button className="w-full md:w-auto">Add to Cart</Button>
+          <Button 
+            className="w-full md:w-auto"
+            onClick={() => {
+              if (user) {
+                dispatch(addToCart({ 
+                  userId: user.id, 
+                  productId: productDetails._id, 
+                  quantity: 1 
+                })).then((data) => {
+                  if (data.payload?.success) {
+                    dispatch(fetchCartItems(user.id));
+                    toast.success('Successfully added to cart');
+                  } else {
+                    toast.error(data.payload?.message || 'Failed to add to cart');
+                  }
+                }).catch((error) => {
+                  toast.error(error.message || 'Failed to add to cart');
+                });
+              } else {
+                toast.error('Please login to add items to cart');
+              }
+            }}
+          >
+            Add to Cart
+          </Button>
 
           {/* Price Trend Predictor */}
           <PriceTrendPredictor productId={productDetails?._id} />

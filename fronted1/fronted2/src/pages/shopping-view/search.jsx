@@ -56,7 +56,11 @@ export default function SearchPage() {
       if (data.payload?.success) {
         dispatch(fetchCartItems(user.id));
         toast.success('Successfully added to cart');
+      } else {
+        toast.error(data.payload?.message || 'Failed to add to cart');
       }
+    }).catch((error) => {
+      toast.error(error.message || 'Failed to add to cart');
     });
   }
 

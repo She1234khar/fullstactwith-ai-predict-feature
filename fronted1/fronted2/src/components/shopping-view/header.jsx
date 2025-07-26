@@ -69,7 +69,7 @@ useEffect(()=>{
     <ShoppingCart className='h-6 w-6' />
       <span className='sr-only'>User cart</span>
     </Button>
-    <UserCartWrapper setOpenCartSheet={setOpenCartSheet} cartItems={cartItems && cartItems.items && cartItems.items.length >0 ? cartItems.items :[]}/>
+    <UserCartWrapper setOpenCartSheet={setOpenCartSheet} cartItems={cartItems || []}/>
     </Sheet>
 
 
@@ -104,10 +104,6 @@ useEffect(()=>{
 }
 
 export default function ShoppingHeader() {
-
-const { isAuthenticated }=useSelector(state=>state.auth)
-
-//console.log(user);
 
   return <header className='sticky top-0 z-40 w-full border-b bg-background'>
    <div className='flex h-16 items-center justify-between px-4 md:px-6'>

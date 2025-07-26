@@ -74,6 +74,8 @@ export default function ShoppingListin() {
       } else {
         toast.error(data.payload?.message || 'Product is out of stock or something went wrong');
       }
+    }).catch((error) => {
+      toast.error(error.message || 'Failed to add to cart');
     });
   }
 

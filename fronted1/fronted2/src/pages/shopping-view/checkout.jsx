@@ -9,7 +9,7 @@ import { toast } from 'sonner';
 
 
 function ShoppingCheckout() {
-  const { cartItems } = useSelector((state) => state.shoppingCart);
+  const { cartItems, cartData } = useSelector((state) => state.shoppingCart);
   const {user} = useSelector((state) => state.auth);
   const {approvalURL} = useSelector((state) => state.shoppingOrderSlice);
 
@@ -18,8 +18,8 @@ function ShoppingCheckout() {
   const dispatch = useDispatch();
 
   const totalCartAmount =
-  cartItems &&cartItems.items&& cartItems.items.length > 0
-    ? cartItems.items.reduce(
+  cartItems && cartItems.length > 0
+    ? cartItems.reduce(
         (sum, currentItem) =>
           sum +
           (currentItem?.salePrice > 0
@@ -31,7 +31,7 @@ function ShoppingCheckout() {
 
    function handleInitiatepaypalPayment() {
 
-    if(cartItems.length === 0){
+    if(!cartItems || cartItems.length === 0){
       toast.error("Your cart is empty. Please add items to your cart before proceeding to checkout.");
       return;
     }
@@ -45,8 +45,8 @@ function ShoppingCheckout() {
 
     const orderData ={
       userId :user?.id,
-      cartId:cartItems?._id,
-        cartItems:cartItems.items.map(singleCartItem => ({
+      cartId:cartData?._id,
+        cartItems:cartItems.map(singleCartItem => ({
           productId: singleCartItem.productId,
       price: singleCartItem.price,
       
@@ -123,8 +123,8 @@ if(approvalURL){
 
         {/* Cart Items Section */}
         <div className="flex flex-col gap-4">
-          {cartItems && cartItems.items && cartItems.items.length > 0 ? (
-            cartItems.items.map((item) => (
+          {cartItems && cartItems.length > 0 ? (
+            cartItems.map((item) => (
               <UserCartItemContent
                 key={item.id || item._id}
                 cartItem={item}
