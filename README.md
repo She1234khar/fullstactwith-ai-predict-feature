@@ -55,6 +55,7 @@ Other: REST APIs, Recharts/Chart.js
 ### 1️⃣ Clone Repository
 bash
 git clone https://github.com/She1234khar/fullstactwith-ai-predict-feature.git
+
 cd fullstactwith-ai-predict-feature
 
 2️⃣ Install Dependencies
