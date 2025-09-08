@@ -1,8 +1,6 @@
 # 🛒 AI-Powered E-Commerce Platform  
 
-![Stars](https://img.shields.io/github/stars/She1234khar/fullstactwith-ai-predict-feature?style=social)  
-![Forks](https://img.shields.io/github/forks/She1234khar/fullstactwith-ai-predict-feature?style=social)  
-![Issues](https://img.shields.io/github/issues/She1234khar/fullstactwith-ai-predict-feature)  
+
 
 A full-stack **E-Commerce Platform** built with **React, TailwindCSS, ShadCN, Express.js, and MongoDB**, enhanced with **Gemini AI-powered features** like product summaries, chatbot assistant, and smart price predictions.  
 
